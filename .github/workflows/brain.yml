@@ -1,0 +1,41 @@
+name: brain
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  on_note_issue:
+    if: github.event_name == 'workflow_dispatch' || contains(join(github.event.issue.labels.*.name, ' '), 'note')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: python -m pip install --upgrade pip && pip install -r requirements.txt
+      - name: Expand issue to article
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-4o-mini
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: python scripts/expand_issue.py
+      - name: Build site
+        run: python scripts/build.py
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: publish from issue #${{ github.event.issue.number }}"
+          branch: ${{ github.ref_name }}
+      - name: Comment URL & close issue
+        env:
+          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          URL="https://${{ github.repository_owner }}.github.io/$(echo $REPO | cut -d'/' -f2)/"
+          gh api repos/$REPO/issues/${{ github.event.issue.number }}/comments -f body="公開しました： $URL"
+          gh api repos/$REPO/issues/${{ github.event.issue.number }} -f state=closed -X PATCH
