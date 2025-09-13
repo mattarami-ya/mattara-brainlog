@@ -1,6 +1,6 @@
 import os, glob, markdown, html
 ROOT=os.path.dirname(os.path.abspath(__file__)); REPO=os.path.dirname(ROOT)
-POSTS=os.path.join(REPO,"posts"); SITE=os.path.join(REPO,"site")
+POSTS=os.path.join(REPO,"posts"); SITE=os.path.join(REPO,"docs")
 CSS="body{font-family:system-ui,-apple-system,'Noto Sans JP',sans-serif;background:#f7f7fb;margin:0} .header{background:#111;color:#fff;padding:18px 16px}.title{max-width:980px;margin:0 auto;font-weight:700}.container{max-width:980px;margin:18px auto;padding:0 12px}.card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:16px 18px;margin:12px 0} a{color:#0a58ca} .post-meta{color:#666;font-size:.9em;margin-top:-6px;margin-bottom:10px}"
 IDX='<!doctype html><html lang=ja><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>マッタラミーヤ｜統合ホーム</title><style>'+CSS+'</style><div class=header><div class=title>マッタラミーヤの音楽実験室｜統合ホーム</div></div><div class=container><div class=card><h2>最新の投稿</h2>{items}</div><div class=card><h2>このサイトについて</h2><p>スマホからの1行メモをAIで増幅して読み物化したサイトです。</p></div></div>'
 PST='<!doctype html><html lang=ja><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>{t}</title><style>'+CSS+'</style><div class=header><div class=title><a href=./index.html style="color:#fff">← トップ</a></div></div><div class=container><div class=card><h1>{t}</h1><div class=post-meta>{d} {tags}</div><div class=content>{c}</div></div></div>'
